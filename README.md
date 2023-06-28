@@ -83,13 +83,14 @@ CREATE TABLE interface_info
     apiUrl     VARCHAR(255) NOT NULL COMMENT '接口地址',
     reqParam   VARCHAR(255) NULL COMMENT '接口参数（json格式）',
     reqMethod  TINYINT      NOT NULL COMMENT '接口请求类型（0-Get, 1-Post, 2-Put, 3-Delete, ……）',
-    reqHeader  TEXT NULL COMMENT '请求头（json格式）',
-    respHeader TEXT NULL COMMENT '响应头（json格式）',
+    reqHeader  TEXT         NULL COMMENT '请求头（json格式）',
+    respHeader TEXT         NULL COMMENT '响应头（json格式）',
     apiStatus  TINYINT      NOT NULL DEFAULT 0 COMMENT '接口状态（0 - 下线， 1 - 上线）',
     userId     BIGINT       NOT NULL COMMENT '接口创建人id',
     createTime DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updateTime DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    isDelete   TINYINT               DEFAULT 0 NOT NULL COMMENT '逻辑删除标志（0-未删除，1-已删除）'
+    isDelete   TINYINT      NOT NULL DEFAULT 0 COMMENT '逻辑删除标志（0-未删除，1-已删除）',
+    index idx_userId (userId)
 ) COMMENT '接口信息表';
 ```
 
