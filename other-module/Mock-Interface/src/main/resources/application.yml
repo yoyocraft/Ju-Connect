@@ -1,0 +1,12 @@
+server:
+  port: 8111
+  servlet:
+    context-path: /api
+spring:
+  application:
+    name: mock-interface
+juzi:
+  api:
+    client:
+      access-key: aaa
+      secret-key: bbb

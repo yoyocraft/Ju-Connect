@@ -37,6 +37,12 @@ public class InterfaceInfo implements Serializable {
 
     /**
      * 接口参数（json格式）
+     * [
+     * {
+     * "type": "String",
+     * "arg": "username"
+     * }
+     * ]
      */
     private String reqParam;
 

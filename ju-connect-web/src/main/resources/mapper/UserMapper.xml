@@ -12,6 +12,8 @@
         <result property="salt" column="salt" jdbcType="VARCHAR"/>
         <result property="gender" column="gender" jdbcType="TINYINT"/>
         <result property="userRole" column="userRole" jdbcType="TINYINT"/>
+        <result property="accessKey" column="accessKey" jdbcType="VARCHAR"/>
+        <result property="secretKey" column="secretKey" jdbcType="VARCHAR"/>
         <result property="userPassword" column="userPassword" jdbcType="VARCHAR"/>
         <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
@@ -20,7 +22,7 @@
 
     <sql id="Base_Column_List">
         id,nickname,userAccount,
-        userAvatar,gender,userRole,salt,
+        userAvatar,gender,userRole,salt,accessKey, secretKey,
         userPassword,createTime,updateTime,
         isDelete
     </sql>
