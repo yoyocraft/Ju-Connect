@@ -23,11 +23,15 @@ public interface UserConstants {
     // region biz
     String USER_LOGIN_STATE_KEY = "user_login";
 
+    Integer USER_KEY_LEN = 36;
+
     // endregion
 
     // region user role
 
     Integer ADMIN_ROLE = 1;
+
+    Integer USER_ROLE = 0;
 
     // endregion
 }

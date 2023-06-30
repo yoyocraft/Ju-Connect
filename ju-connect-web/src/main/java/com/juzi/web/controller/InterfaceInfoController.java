@@ -1,11 +1,14 @@
 package com.juzi.web.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.juzi.common.annotation.AuthCheck;
 import com.juzi.common.biz.BaseResponse;
 import com.juzi.common.biz.PageRequest;
 import com.juzi.common.util.ResultUtils;
+import com.juzi.model.dto.SingleIdRequest;
 import com.juzi.model.dto.interface_info.InterfaceDeleteRequest;
 import com.juzi.model.dto.interface_info.InterfaceEditRequest;
+import com.juzi.model.dto.interface_info.InterfaceInvokeRequest;
 import com.juzi.model.dto.interface_info.InterfaceQueryRequest;
 import com.juzi.model.vo.InterfaceInfoVO;
 import com.juzi.web.service.InterfaceInfoService;
@@ -55,6 +58,23 @@ public class InterfaceInfoController {
     @GetMapping("/query")
     public BaseResponse<Page<InterfaceInfoVO>> queryInterfaceInfoByPage(InterfaceQueryRequest interfaceQueryRequest) {
         return ResultUtils.success(interfaceInfoService.queryInterfaceByPage(interfaceQueryRequest));
+    }
+
+    @PostMapping("/online")
+    @AuthCheck(mustRole = "admin")
+    public BaseResponse<Boolean> onlineInterface(@RequestBody SingleIdRequest idRequest) {
+        return ResultUtils.success(interfaceInfoService.interfaceOnline(idRequest));
+    }
+
+    @PostMapping("/offline")
+    @AuthCheck(mustRole = "admin")
+    public BaseResponse<Boolean> offlineInterface(@RequestBody SingleIdRequest idRequest) {
+        return ResultUtils.success(interfaceInfoService.interfaceOffline(idRequest));
+    }
+
+    @PostMapping("/invoke")
+    public BaseResponse<Object> invokeInterface(@RequestBody InterfaceInvokeRequest interfaceInvokeRequest, HttpServletRequest request) {
+        return ResultUtils.success(interfaceInfoService.invokeInterface(interfaceInvokeRequest, request));
     }
 
 }

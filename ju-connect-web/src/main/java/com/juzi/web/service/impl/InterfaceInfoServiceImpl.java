@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.gson.Gson;
 import com.juzi.common.biz.PageRequest;
 import com.juzi.common.biz.StatusCode;
 import com.juzi.common.constants.CommonConstants;
@@ -12,12 +13,15 @@ import com.juzi.common.constants.UserConstants;
 import com.juzi.common.util.InterfaceValidUtils;
 import com.juzi.common.util.SqlUtils;
 import com.juzi.common.util.ThrowUtils;
+import com.juzi.model.dto.SingleIdRequest;
 import com.juzi.model.dto.interface_info.InterfaceDeleteRequest;
 import com.juzi.model.dto.interface_info.InterfaceEditRequest;
+import com.juzi.model.dto.interface_info.InterfaceInvokeRequest;
 import com.juzi.model.dto.interface_info.InterfaceQueryRequest;
 import com.juzi.model.entity.InterfaceInfo;
 import com.juzi.model.vo.InterfaceInfoVO;
 import com.juzi.model.vo.UserVO;
+import com.juzi.sdk.client.MockApiClient;
 import com.juzi.web.mapper.InterfaceInfoMapper;
 import com.juzi.web.service.InterfaceInfoService;
 import com.juzi.web.service.UserService;
@@ -38,8 +42,13 @@ import java.util.stream.Collectors;
 public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, InterfaceInfo>
         implements InterfaceInfoService {
 
+    private static final Gson GSON = new Gson();
+
     @Resource
     private UserService userService;
+
+    @Resource
+    private InterfaceInfoMapper interfaceInfoMapper;
 
     @Override
     public Long interfaceInfoEdit(InterfaceEditRequest interfaceEditRequest, boolean add, HttpServletRequest request) {
@@ -129,6 +138,63 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         QueryWrapper<InterfaceInfo> queryWrapper = getCommonQueryWrapper(interfaceQueryRequest);
 
         return getInterfaceVOPage(current, pageSize, queryWrapper);
+    }
+
+
+    @Override
+    public Boolean interfaceOnline(SingleIdRequest idRequest) {
+        Long interfaceId = idRequest.getId();
+        ThrowUtils.throwIf(interfaceId <= 0, StatusCode.PARAMS_ERROR, "参数错误");
+
+        InterfaceInfo oldInterfaceInfo = this.getById(interfaceId);
+        ThrowUtils.throwIf(Objects.isNull(oldInterfaceInfo), StatusCode.NOT_FOUND_ERROR, "接口不存在");
+
+        // 判断接口是否可以被调用，实际上是根据RPC远程，此处先使用SDK
+        MockApiClient mockApiClient = new MockApiClient("aaa", "bbb");
+        com.juzi.sdk.model.entity.User mockUser = new com.juzi.sdk.model.entity.User("橘子");
+        String rpcRes = mockApiClient.getUserByJson(mockUser);
+        ThrowUtils.throwIf(StringUtils.isBlank(rpcRes), StatusCode.SYSTEM_ERROR, "接口调用失败");
+
+        // 修改接口状态
+        boolean updateRes = interfaceInfoMapper.setApiStatusBoolean(interfaceId, InterfaceInfoConstants.ON_LINE);
+        ThrowUtils.throwIf(!updateRes, StatusCode.SYSTEM_ERROR, "修改接口状态失败");
+
+        return Boolean.TRUE;
+    }
+
+    @Override
+    public Boolean interfaceOffline(SingleIdRequest idRequest) {
+        Long interfaceId = idRequest.getId();
+        ThrowUtils.throwIf(interfaceId <= 0, StatusCode.PARAMS_ERROR, "参数错误");
+
+        InterfaceInfo oldInterfaceInfo = this.getById(interfaceId);
+        ThrowUtils.throwIf(Objects.isNull(oldInterfaceInfo), StatusCode.NOT_FOUND_ERROR, "接口不存在");
+
+        // 修改接口状态
+        boolean updateRes = interfaceInfoMapper.setApiStatusBoolean(interfaceId, InterfaceInfoConstants.OFF_LINE);
+        ThrowUtils.throwIf(!updateRes, StatusCode.SYSTEM_ERROR, "修改接口状态失败");
+
+        return Boolean.TRUE;
+    }
+
+    @Override
+    public Object invokeInterface(InterfaceInvokeRequest interfaceInvokeRequest, HttpServletRequest request) {
+        // 统计次数使用
+        UserVO loginUser = userService.getLoginUser(request);
+
+        Long id = interfaceInvokeRequest.getId();
+        String reqParams = interfaceInvokeRequest.getReqParams();
+
+        InterfaceInfo interfaceInfo = this.getById(id);
+        ThrowUtils.throwIf(Objects.isNull(interfaceInfo), StatusCode.NOT_FOUND_ERROR, "接口不存在");
+        ThrowUtils.throwIf(!InterfaceInfoConstants.ON_LINE.equals(interfaceInfo.getApiStatus()),
+                StatusCode.NO_AUTH_ERROR, "接口不在线");
+
+        // 调用接口（本质上是RPC）
+        com.juzi.sdk.model.entity.User mockUser = GSON.fromJson(reqParams, com.juzi.sdk.model.entity.User.class);
+        MockApiClient mockApiClient = new MockApiClient(loginUser.getAccessKey(), loginUser.getSecretKey());
+
+        return mockApiClient.getUserByJson(mockUser);
     }
 
     private Page<InterfaceInfoVO> getInterfaceVOPage(Long current, Long pageSize, QueryWrapper<InterfaceInfo> queryWrapper) {

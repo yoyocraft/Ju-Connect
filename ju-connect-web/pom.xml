@@ -59,6 +59,13 @@
             <artifactId>ju-connect-common</artifactId>
             <version>0.0.1</version>
         </dependency>
+
+        <!--sdk-->
+        <dependency>
+            <groupId>com.juzi</groupId>
+            <artifactId>Mock-Interface-SDK</artifactId>
+            <version>0.0.1</version>
+        </dependency>
     </dependencies>
 
 </project>

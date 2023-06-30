@@ -1,9 +1,11 @@
 package com.juzi.web.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.juzi.model.dto.SingleIdRequest;
 import com.juzi.model.dto.user.UserLoginRequest;
 import com.juzi.model.dto.user.UserRegisterRequest;
 import com.juzi.model.entity.User;
+import com.juzi.model.vo.UserSignVO;
 import com.juzi.model.vo.UserVO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,10 +51,20 @@ public interface UserService extends IService<User> {
     UserVO getLoginUser(HttpServletRequest request);
 
     /**
-     * 判断当前登录用户是否是管理员
+     * 用户申请key
      *
-     * @param request http request
-     * @return true - 是管理员
+     * @param idRequest user id封装
+     * @param request   http request
+     * @return user sign vo
      */
-    Boolean canAdmin(HttpServletRequest request);
+    UserSignVO applyUserKey(SingleIdRequest idRequest, HttpServletRequest request);
+
+    /**
+     * 查看用户的key
+     *
+     * @param idRequest user id封装
+     * @param request   http request
+     * @return user sign vo
+     */
+    UserSignVO getUserKey(SingleIdRequest idRequest, HttpServletRequest request);
 }

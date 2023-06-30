@@ -1,6 +1,7 @@
 package com.juzi.common.util;
 
 import com.juzi.common.constants.UserConstants;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 
@@ -36,5 +37,15 @@ public class BizRandomUtils {
         return RandomUtils.nextInt(0, 2);
     }
 
+    public static String[] genUserKey(String salt) {
+        String accessKey = RandomStringUtils.randomAlphabetic(UserConstants.USER_KEY_LEN);
+        String secretKey = DigestUtils.sha256Hex(salt + accessKey).substring(0, UserConstants.USER_KEY_LEN);
+        return new String[]{accessKey, secretKey};
+    }
+
+    public static void main(String[] args) {
+        String[] key = genUserKey("aaa");
+        System.out.println("key = " + key[0] + ", " + key[1]);
+    }
 
 }

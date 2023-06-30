@@ -1,18 +1,22 @@
 package com.juzi.web.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.juzi.common.biz.StatusCode;
 import com.juzi.common.constants.UserConstants;
 import com.juzi.common.util.BizRandomUtils;
 import com.juzi.common.util.ThrowUtils;
 import com.juzi.common.util.UserValidUtils;
+import com.juzi.model.dto.SingleIdRequest;
 import com.juzi.model.dto.user.UserLoginRequest;
 import com.juzi.model.dto.user.UserRegisterRequest;
 import com.juzi.model.entity.User;
+import com.juzi.model.vo.UserSignVO;
 import com.juzi.model.vo.UserVO;
 import com.juzi.web.mapper.UserMapper;
 import com.juzi.web.service.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -112,9 +116,38 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public Boolean canAdmin(HttpServletRequest request) {
-        UserVO loginUser = getLoginUser(request);
-        return UserConstants.ADMIN_ROLE.equals(loginUser.getUserRole());
+    public UserSignVO applyUserKey(SingleIdRequest idRequest, HttpServletRequest request) {
+        Long userId = idRequest.getId();
+
+        User user = this.getById(userId);
+        ThrowUtils.throwIf(Objects.isNull(user), StatusCode.NOT_FOUND_ERROR, "用户不存在");
+
+        // 生成ak、sk
+        String[] userKeys = BizRandomUtils.genUserKey(user.getSalt());
+        String accessKey = userKeys[0];
+        String secretKey = userKeys[1];
+
+        // 保存到数据库
+        LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(User::getId, userId).set(User::getAccessKey, accessKey).set(User::getSecretKey, secretKey);
+        boolean updateRes = this.update(updateWrapper);
+        ThrowUtils.throwIf(!updateRes, StatusCode.SYSTEM_ERROR, "申请失败");
+
+        return new UserSignVO(userId, accessKey, secretKey);
+    }
+
+    @Override
+    public UserSignVO getUserKey(SingleIdRequest idRequest, HttpServletRequest request) {
+        Long userId = idRequest.getId();
+
+        User user = this.getById(userId);
+        ThrowUtils.throwIf(Objects.isNull(user), StatusCode.NOT_FOUND_ERROR, "用户不存在");
+        String accessKey = user.getAccessKey();
+        String secretKey = user.getSecretKey();
+        ThrowUtils.throwIf(StringUtils.isBlank(accessKey) || StringUtils.isBlank(secretKey),
+                StatusCode.NOT_FOUND, "当前尚未申请Key");
+
+        return new UserSignVO(userId, accessKey, secretKey);
     }
 
 }

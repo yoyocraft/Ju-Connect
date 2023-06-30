@@ -3,8 +3,10 @@ package com.juzi.web.controller;
 
 import com.juzi.common.biz.BaseResponse;
 import com.juzi.common.util.ResultUtils;
+import com.juzi.model.dto.SingleIdRequest;
 import com.juzi.model.dto.user.UserLoginRequest;
 import com.juzi.model.dto.user.UserRegisterRequest;
+import com.juzi.model.vo.UserSignVO;
 import com.juzi.model.vo.UserVO;
 import com.juzi.web.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +46,16 @@ public class UserController {
     @GetMapping("/curr")
     public BaseResponse<UserVO> getLoginUser(HttpServletRequest request) {
         return ResultUtils.success(userService.getLoginUser(request));
+    }
+
+    @PostMapping("/gen/key")
+    public BaseResponse<UserSignVO> applyUserKey(@RequestBody SingleIdRequest idRequest, HttpServletRequest request) {
+        return ResultUtils.success(userService.applyUserKey(idRequest, request));
+    }
+
+    @GetMapping("/gen/key")
+    public BaseResponse<UserSignVO> getUserKey(SingleIdRequest idRequest, HttpServletRequest request) {
+        return ResultUtils.success(userService.getUserKey(idRequest, request));
     }
 
 }

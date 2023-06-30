@@ -6,6 +6,7 @@ import com.juzi.common.biz.PageRequest;
 import com.juzi.model.dto.SingleIdRequest;
 import com.juzi.model.dto.interface_info.InterfaceDeleteRequest;
 import com.juzi.model.dto.interface_info.InterfaceEditRequest;
+import com.juzi.model.dto.interface_info.InterfaceInvokeRequest;
 import com.juzi.model.dto.interface_info.InterfaceQueryRequest;
 import com.juzi.model.entity.InterfaceInfo;
 import com.juzi.model.vo.InterfaceInfoVO;
@@ -73,4 +74,29 @@ public interface InterfaceInfoService extends IService<InterfaceInfo> {
      * @return interface info vo page
      */
     Page<InterfaceInfoVO> queryInterfaceByPage(InterfaceQueryRequest interfaceQueryRequest);
+
+    /**
+     * 管理员上线接口
+     *
+     * @param idRequest 接口id封装
+     * @return true - 上线成功
+     */
+    Boolean interfaceOnline(SingleIdRequest idRequest);
+
+    /**
+     * 管理员下线接口
+     *
+     * @param idRequest 接口id封装
+     * @return true - 下线成功
+     */
+    Boolean interfaceOffline(SingleIdRequest idRequest);
+
+    /**
+     * 调用接口
+     *
+     * @param interfaceInvokeRequest 接口调用请求
+     * @param request                http request
+     * @return 调用结果
+     */
+    Object invokeInterface(InterfaceInvokeRequest interfaceInvokeRequest, HttpServletRequest request);
 }

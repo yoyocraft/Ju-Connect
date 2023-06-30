@@ -43,6 +43,16 @@ public class UserVO implements Serializable {
     private Integer userRole;
 
     /**
+     * ak
+     */
+    private String accessKey;
+
+    /**
+     * sk
+     */
+    private String secretKey;
+
+    /**
      * 创建时间
      */
     private Date createTime;

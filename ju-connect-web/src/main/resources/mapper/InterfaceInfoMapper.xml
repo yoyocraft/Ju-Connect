@@ -26,4 +26,10 @@
         respHeader,apiStatus,userId,
         createTime,updateTime,isDelete
     </sql>
+    <update id="setApiStatusBoolean">
+        update interface_info
+        set apiStatus = #{apiStatus}
+        where isDelete = 0
+          and id = #{id};
+    </update>
 </mapper>
