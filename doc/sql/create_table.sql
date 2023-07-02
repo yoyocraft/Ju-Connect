@@ -40,3 +40,18 @@ CREATE TABLE interface_info
     isDelete   TINYINT      NOT NULL DEFAULT 0 COMMENT '逻辑删除标志（0-未删除，1-已删除）',
     index idx_userId (userId)
 ) COMMENT '接口信息表';
+
+CREATE TABLE user_interface_info
+(
+    id          BIGINT   NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '主键',
+    userId      BIGINT   NOT NULL COMMENT '接口开通人id',
+    interfaceId BIGINT   NOT NULL COMMENT '开通接口id',
+    totalNum    int               DEFAULT 0 NOT NULL COMMENT '总调用次数',
+    leftNum     int               DEFAULT 0 NOT NULL COMMENT '剩余调用次数',
+    `status`    TINYINT  NOT NULL DEFAULT 0 COMMENT '状态（0 - 正常， 1 - 禁用）',
+    createTime  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updateTime  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    isDelete    TINYINT  NOT NULL DEFAULT 0 COMMENT '逻辑删除标志（0-未删除，1-已删除）',
+    index idx_userId (userId),
+    index idx_interfaceId (interfaceId)
+) COMMENT '用户接口信息表';
