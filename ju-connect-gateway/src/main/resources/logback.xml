@@ -13,7 +13,7 @@
 
     <!-- 滚动输出文件日志配置 -->
     <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>ju-connect-web/logs/${project-name}.log</file>
+        <file>ju-connect-gateway/logs/${project-name}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>logs/${project-name}-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">

@@ -19,6 +19,7 @@
         <module>ju-connect-model</module>
         <module>ju-connect-web</module>
         <module>ju-connect-common</module>
+        <module>ju-connect-gateway</module>
     </modules>
 
     <properties>

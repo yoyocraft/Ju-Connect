@@ -2,12 +2,14 @@ package com.juzi.web.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.juzi.model.entity.UserInterfaceInfo;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * @author codejuzi
  * @description 针对表【user_interface_info(用户接口信息表)】的数据库操作Mapper
  * @createDate 2023-07-02 11:05:13
  */
+@Mapper
 public interface UserInterfaceInfoMapper extends BaseMapper<UserInterfaceInfo> {
 
     /**

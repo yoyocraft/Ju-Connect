@@ -21,7 +21,8 @@
         totalNum,leftNum,`status`,
         createTime,updateTime,isDelete
     </sql>
-    <select id="queryByUserIdAndInterfaceId" resultType="UserInterfaceInfo">
+
+    <select id="queryByUserIdAndInterfaceId" resultType="com.juzi.model.entity.UserInterfaceInfo">
         select *
         from ju_connect.user_interface_info
         where isDelete = 0

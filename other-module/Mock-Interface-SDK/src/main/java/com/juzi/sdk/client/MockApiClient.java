@@ -26,26 +26,27 @@ public class MockApiClient {
         this.secretKey = secretKey;
     }
 
-    private static final String URL_PREFIX = "http://localhost:8111/api";
+    //    private static final String URL_PREFIX = "http://localhost:8111/api";
+    private static final String GATEWAY_PREFIX = "http://localhost:10000/api";
 
     public String getNameByGet(String name) {
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("name", name);
 
-        return HttpUtil.get(URL_PREFIX + "/user/name", paramMap);
+        return HttpUtil.get(GATEWAY_PREFIX + "/user/name", paramMap);
     }
 
     public String getNameByPost(String name) {
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("name", name);
 
-        return HttpUtil.post(URL_PREFIX + "/user/name", paramMap);
+        return HttpUtil.post(GATEWAY_PREFIX + "/user/name", paramMap);
     }
 
     @SuppressWarnings("resource")
     public String getUserByJson(User user) {
         String json = JSONUtil.toJsonStr(user);
-        HttpResponse httpResponse = HttpRequest.post(URL_PREFIX + "/user")
+        HttpResponse httpResponse = HttpRequest.post(GATEWAY_PREFIX + "/user")
                 .addHeaders(getHeaders(json))
                 .body(json)
                 .execute();
