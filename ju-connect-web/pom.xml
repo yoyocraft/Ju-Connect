@@ -37,16 +37,22 @@
             <scope>test</scope>
         </dependency>
 
+        <!--knife4j-->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+        </dependency>
+
         <!--nacos-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
 
-        <!--knife4j-->
+        <!--dubbo-->
         <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
         </dependency>
 
         <dependency>
@@ -63,6 +69,11 @@
         <dependency>
             <groupId>com.juzi</groupId>
             <artifactId>ju-connect-common</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.juzi</groupId>
+            <artifactId>ju-connect-dubbo-api</artifactId>
             <version>0.0.1</version>
         </dependency>
 

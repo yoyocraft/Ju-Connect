@@ -10,6 +10,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 /**
  * @author codejuzi
  */
+@EnableDubbo
 @SpringBootApplication
 @MapperScan(basePackages = {"com.juzi.web.mapper"})
 @ComponentScan(basePackages = {"com.juzi.web", "com.juzi.common"})

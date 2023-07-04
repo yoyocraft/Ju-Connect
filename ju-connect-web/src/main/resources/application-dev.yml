@@ -2,6 +2,10 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.0.101:8848
   datasource:
     url: jdbc:mysql://localhost:3306/ju_connect             # 数据库连接URL
     username: root                                          # 数据库用户名
@@ -33,11 +37,11 @@ mybatis:
   mapper-locations: classpath:/mapper/*.xml
 
 dubbo:
-  application:
-    name: ju-web-service-dubbo
   registry:
+    id: nacos-registry
     address: nacos://192.168.0.101:8848
-    id: nacos-register
   protocol:
     name: dubbo
     port: -1
+  scan:
+    base-packages: com.juzi.web.rpc

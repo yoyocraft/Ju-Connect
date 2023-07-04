@@ -1,4 +1,4 @@
-package com.juzi.web.rpc;
+package com.juzi.dubbo.service;
 
 import com.juzi.model.dto.interface_info.InterfaceGatewayQueryRequest;
 import com.juzi.model.entity.InterfaceInfo;
@@ -6,7 +6,8 @@ import com.juzi.model.entity.InterfaceInfo;
 /**
  * @author codejuzi
  */
-public interface InterfaceInfoRpcService {
+public interface RPCInterfaceService {
+
     /**
      * 网关层面去搜索接口
      *

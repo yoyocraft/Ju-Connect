@@ -7,6 +7,7 @@ import com.juzi.common.biz.PageRequest;
 import com.juzi.common.util.ResultUtils;
 import com.juzi.model.dto.SingleIdRequest;
 import com.juzi.model.dto.interface_info.*;
+import com.juzi.model.entity.InterfaceInfo;
 import com.juzi.model.vo.InterfaceInfoVO;
 import com.juzi.web.service.InterfaceInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +57,7 @@ public class InterfaceInfoController {
     public BaseResponse<Page<InterfaceInfoVO>> queryInterfaceInfoByPage(InterfaceQueryRequest interfaceQueryRequest) {
         return ResultUtils.success(interfaceInfoService.queryInterfaceByPage(interfaceQueryRequest));
     }
+
 
     @PostMapping("/online")
     @AuthCheck(mustRole = "admin")

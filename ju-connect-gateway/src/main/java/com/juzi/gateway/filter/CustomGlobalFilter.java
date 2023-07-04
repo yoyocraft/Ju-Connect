@@ -2,10 +2,10 @@ package com.juzi.gateway.filter;
 
 import com.juzi.common.biz.StatusCode;
 import com.juzi.common.util.ThrowUtils;
+import com.juzi.dubbo.service.RPCInterfaceService;
 import com.juzi.model.dto.interface_info.InterfaceGatewayQueryRequest;
 import com.juzi.model.entity.InterfaceInfo;
 import com.juzi.model.enums.ApiMethodEnums;
-import com.juzi.rpc.InterfaceInfoRpcService;
 import com.juzi.sdk.utils.SignUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -40,6 +40,9 @@ import java.util.Objects;
 @Slf4j
 @Component
 public class CustomGlobalFilter implements GlobalFilter, Ordered {
+
+    @DubboReference
+    private RPCInterfaceService rpcInterfaceService;
 
     private static final List<String> IP_WHITE_LIST = Arrays.asList(
             "127.0.0.1",
@@ -189,9 +192,9 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         ApiMethodEnums apiMethodEnum = ApiMethodEnums.getEnumByMethod(methodStr);
         ThrowUtils.throwIf(Objects.isNull(apiMethodEnum), StatusCode.PARAMS_ERROR, "非法请求方法");
         Integer apiMethod = apiMethodEnum.getApiMethod();
-        InterfaceGatewayQueryRequest interfaceGatewayQueryRequest = new InterfaceGatewayQueryRequest(apiUrl, apiMethod);
         // todo 调用服务
-        return null;
+        InterfaceGatewayQueryRequest interfaceGatewayQueryRequest = new InterfaceGatewayQueryRequest(apiUrl, apiMethod);
+        return rpcInterfaceService.queryInterfaceByGateway(interfaceGatewayQueryRequest);
     }
 
     private Mono<Void> handleNoAuth(ServerHttpResponse response) {

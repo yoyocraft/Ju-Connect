@@ -2,9 +2,9 @@ package com.juzi.web.rpc;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.juzi.common.constants.InterfaceInfoConstants;
+import com.juzi.dubbo.service.RPCInterfaceService;
 import com.juzi.model.dto.interface_info.InterfaceGatewayQueryRequest;
 import com.juzi.model.entity.InterfaceInfo;
-import com.juzi.rpc.InterfaceInfoRpcService;
 import com.juzi.web.mapper.InterfaceInfoMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -15,7 +15,7 @@ import javax.annotation.Resource;
  * @author codejuzi
  */
 @DubboService
-public class InterfaceInfoRpcServiceImpl implements InterfaceInfoRpcService {
+public class RPCInterfaceServiceImpl implements RPCInterfaceService {
 
     @Resource
     private InterfaceInfoMapper interfaceInfoMapper;

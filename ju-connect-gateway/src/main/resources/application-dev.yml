@@ -7,3 +7,15 @@ spring:
           uri: http://localhost:8111
           predicates:
             - Path=/api/**
+    nacos:
+      discovery:
+        server-addr: 192.168.0.101:8848
+        register-enabled: false
+
+dubbo:
+  registry:
+    id: nacos-registry-gateway
+    address: nacos://192.168.0.101:8848
+  protocol:
+    name: dubbo
+    port: -1
