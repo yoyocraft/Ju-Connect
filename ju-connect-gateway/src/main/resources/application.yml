@@ -5,9 +5,13 @@ server:
 
 spring:
   application:
-    name: ju-connect-gateway
+    name: ju-gateway-service
   profiles:
     active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.0.101:8848
 
 # 开启日志
 logging:

@@ -3,6 +3,7 @@ spring:
     gateway:
       routes:
         - id: api_route
+          # 模拟接口的地址
           uri: http://localhost:8111
           predicates:
             - Path=/api/**

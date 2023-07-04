@@ -39,8 +39,11 @@
         <commons-codec.version>1.15</commons-codec.version>
         <hutool.version>5.8.19</hutool.version>
         <spring-cloud-gateway.version>3.1.8</spring-cloud-gateway.version>
+        <spring-cloud-alibaba.version>2021.0.5.0</spring-cloud-alibaba.version>
+        <spring-cloud.version>2021.0.8</spring-cloud.version>
         <logback.version>1.2.12</logback.version>
     </properties>
+
 
     <dependencyManagement>
         <dependencies>
@@ -61,11 +64,20 @@
                 <version>${spring.boot.version}</version>
             </dependency>
 
-            <!--gateway-->
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-gateway</artifactId>
-                <version>${spring-cloud-gateway.version}</version>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <!--mybatis && mybatis-plus -->

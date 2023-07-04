@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.juzi.common.biz.PageRequest;
 import com.juzi.model.dto.SingleIdRequest;
-import com.juzi.model.dto.interface_info.InterfaceDeleteRequest;
-import com.juzi.model.dto.interface_info.InterfaceEditRequest;
-import com.juzi.model.dto.interface_info.InterfaceInvokeRequest;
-import com.juzi.model.dto.interface_info.InterfaceQueryRequest;
+import com.juzi.model.dto.interface_info.*;
 import com.juzi.model.entity.InterfaceInfo;
 import com.juzi.model.vo.InterfaceInfoVO;
 
@@ -74,6 +71,7 @@ public interface InterfaceInfoService extends IService<InterfaceInfo> {
      * @return interface info vo page
      */
     Page<InterfaceInfoVO> queryInterfaceByPage(InterfaceQueryRequest interfaceQueryRequest);
+
 
     /**
      * 管理员上线接口

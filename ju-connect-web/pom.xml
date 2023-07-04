@@ -37,6 +37,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!--nacos-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
         <!--knife4j-->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>

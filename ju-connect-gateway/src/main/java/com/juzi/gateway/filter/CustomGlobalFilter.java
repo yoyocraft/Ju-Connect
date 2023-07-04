@@ -1,7 +1,14 @@
 package com.juzi.gateway.filter;
 
+import com.juzi.common.biz.StatusCode;
+import com.juzi.common.util.ThrowUtils;
+import com.juzi.model.dto.interface_info.InterfaceGatewayQueryRequest;
+import com.juzi.model.entity.InterfaceInfo;
+import com.juzi.model.enums.ApiMethodEnums;
+import com.juzi.rpc.InterfaceInfoRpcService;
 import com.juzi.sdk.utils.SignUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -40,6 +47,8 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
             "0:0:0:0:0:0:0:1"
     );
 
+    private static final String INTERFACE_URL_HOST = "http://localhost:8111";
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         // 请求日志处理
@@ -61,7 +70,18 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         }
 
         // 请求的模拟接口是否存在
-        // TODO: 2023/7/2 去数据库查询
+        String methodStr = request.getMethodValue();
+        String apiUrl = INTERFACE_URL_HOST + request.getPath().value();
+        InterfaceInfo interfaceInfo;
+        try {
+            interfaceInfo = queryInterfaceInfo(apiUrl, methodStr);
+        } catch (Exception e) {
+            log.error("接口调用异常", e);
+            return handleNoAuth(response);
+        }
+        if (Objects.isNull(interfaceInfo)) {
+            return handleNoAuth(response);
+        }
 
         // 请求转发，调用模拟接口
         return handleResponse(exchange, chain);
@@ -73,7 +93,6 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
             ServerHttpResponse originalResponse = exchange.getResponse();
             // 缓冲区工厂，拿到缓存数据
             DataBufferFactory bufferFactory = originalResponse.bufferFactory();
-
             HttpStatus statusCode = originalResponse.getStatusCode();
 
             if (statusCode == HttpStatus.OK) {
@@ -166,11 +185,19 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         }
     }
 
+    private InterfaceInfo queryInterfaceInfo(String apiUrl, String methodStr) {
+        ApiMethodEnums apiMethodEnum = ApiMethodEnums.getEnumByMethod(methodStr);
+        ThrowUtils.throwIf(Objects.isNull(apiMethodEnum), StatusCode.PARAMS_ERROR, "非法请求方法");
+        Integer apiMethod = apiMethodEnum.getApiMethod();
+        InterfaceGatewayQueryRequest interfaceGatewayQueryRequest = new InterfaceGatewayQueryRequest(apiUrl, apiMethod);
+        // todo 调用服务
+        return null;
+    }
+
     private Mono<Void> handleNoAuth(ServerHttpResponse response) {
         response.setStatusCode(HttpStatus.FORBIDDEN);
         return response.setComplete();
     }
-
 
     private boolean validateTimestamp(String timestamp) {
         long currentTime = Instant.now().getEpochSecond();
