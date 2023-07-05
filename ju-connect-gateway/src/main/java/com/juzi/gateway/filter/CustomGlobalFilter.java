@@ -3,8 +3,12 @@ package com.juzi.gateway.filter;
 import com.juzi.common.biz.StatusCode;
 import com.juzi.common.util.ThrowUtils;
 import com.juzi.dubbo.service.RPCInterfaceService;
+import com.juzi.dubbo.service.RPCUserInterfaceService;
+import com.juzi.dubbo.service.RPCUserService;
 import com.juzi.model.dto.interface_info.InterfaceGatewayQueryRequest;
+import com.juzi.model.dto.user_interface_info.UserInterfaceAccNumDownRequest;
 import com.juzi.model.entity.InterfaceInfo;
+import com.juzi.model.entity.User;
 import com.juzi.model.enums.ApiMethodEnums;
 import com.juzi.sdk.utils.SignUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +48,12 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
     @DubboReference
     private RPCInterfaceService rpcInterfaceService;
 
+    @DubboReference
+    private RPCUserService rpcUserService;
+
+    @DubboReference
+    private RPCUserInterfaceService rpcUserInterfaceService;
+
     private static final List<String> IP_WHITE_LIST = Arrays.asList(
             "127.0.0.1",
             "192.168.0.101",
@@ -66,8 +76,9 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         }
 
         // 用户鉴权
+        User invokeUser;
         try {
-            doUserAuth(request);
+            invokeUser = doUserAuth(request);
         } catch (Exception e) {
             return handleNoAuth(response);
         }
@@ -87,10 +98,13 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         }
 
         // 请求转发，调用模拟接口
-        return handleResponse(exchange, chain);
+        return handleResponse(exchange, chain, invokeUser.getId(), interfaceInfo.getId());
     }
 
-    private Mono<Void> handleResponse(ServerWebExchange exchange, GatewayFilterChain chain) {
+    private Mono<Void> handleResponse(ServerWebExchange exchange,
+                                      GatewayFilterChain chain,
+                                      Long userId,
+                                      Long interfaceInfoId) {
         try {
             // 初始的响应对象
             ServerHttpResponse originalResponse = exchange.getResponse();
@@ -110,7 +124,10 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
                             // 对象是响应式的
                             Flux<? extends DataBuffer> fluxBody = Flux.from(body);
                             return super.writeWith(fluxBody.map(dataBuffer -> {
-                                // TODO: 2023/7/2 调用成功，扣减用户调用次数
+                                // 扣减用户接口调用次数
+                                UserInterfaceAccNumDownRequest userInterfaceAccNumDownRequest
+                                        = new UserInterfaceAccNumDownRequest(userId, interfaceInfoId, 1);
+                                rpcUserInterfaceService.userInterfaceAccNumDown(userInterfaceAccNumDownRequest);
                                 byte[] content = new byte[dataBuffer.readableByteCount()];
                                 dataBuffer.read(content);
                                 // 释放内存
@@ -157,7 +174,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         log.info("请求IP：{}", request.getRemoteAddress());
     }
 
-    private void doUserAuth(ServerHttpRequest request) {
+    private User doUserAuth(ServerHttpRequest request) {
         HttpHeaders headers = request.getHeaders();
         String accessKey = headers.getFirst("accessKey");
         String nonce = headers.getFirst("nonce");
@@ -165,12 +182,17 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         String body = URLDecoder.decode(Objects.requireNonNull(headers.getFirst("body")), StandardCharsets.UTF_8);
         String sign = headers.getFirst("sign");
 
-        // 实际上是根据ak去数据库查询是否分配给用户
-        if (!"aaa".equals(accessKey)) {
+        User invokeUser = rpcUserService.getUserByAccessKey(accessKey);
+        if (Objects.isNull(invokeUser)) {
             throw new RuntimeException("无权限");
         }
 
-        // 校验随机数，实际上还要查看服务器端是否有这个随机数
+        // 实际上是根据ak去数据库查询是否分配给用户
+        if (!invokeUser.getAccessKey().equals(accessKey)) {
+            throw new RuntimeException("无权限");
+        }
+
+        // todo 校验随机数，实际上还要查看服务器端是否有这个随机数
         assert nonce != null;
         if (nonce.length() != 20) {
             throw new RuntimeException("无权限");
@@ -182,17 +204,17 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         }
 
         // 校验sign， 实际上的sk是从数据库中查出来的
-        String serverSign = SignUtils.genSign(body, "bbb");
+        String serverSign = SignUtils.genSign(body, invokeUser.getSecretKey());
         if (!serverSign.equals(sign)) {
             throw new RuntimeException("无权限");
         }
+        return invokeUser;
     }
 
     private InterfaceInfo queryInterfaceInfo(String apiUrl, String methodStr) {
         ApiMethodEnums apiMethodEnum = ApiMethodEnums.getEnumByMethod(methodStr);
         ThrowUtils.throwIf(Objects.isNull(apiMethodEnum), StatusCode.PARAMS_ERROR, "非法请求方法");
         Integer apiMethod = apiMethodEnum.getApiMethod();
-        // todo 调用服务
         InterfaceGatewayQueryRequest interfaceGatewayQueryRequest = new InterfaceGatewayQueryRequest(apiUrl, apiMethod);
         return rpcInterfaceService.queryInterfaceByGateway(interfaceGatewayQueryRequest);
     }

@@ -133,7 +133,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         boolean updateRes = this.update(updateWrapper);
         ThrowUtils.throwIf(!updateRes, StatusCode.SYSTEM_ERROR, "申请失败");
 
-        return new UserSignVO(userId, accessKey, secretKey);
+        return new UserSignVO(accessKey, secretKey);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         ThrowUtils.throwIf(StringUtils.isBlank(accessKey) || StringUtils.isBlank(secretKey),
                 StatusCode.NOT_FOUND, "当前尚未申请Key");
 
-        return new UserSignVO(userId, accessKey, secretKey);
+        return new UserSignVO(accessKey, secretKey);
     }
 
 }

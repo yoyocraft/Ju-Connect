@@ -21,6 +21,13 @@
         totalNum,leftNum,`status`,
         createTime,updateTime,isDelete
     </sql>
+    <update id="subAccNum">
+        update ju_connect.user_interface_info
+        set leftNum = leftNum - #{accNum}
+        where isDelete = 0
+          and userId = #{userId}
+          and interfaceId = #{interfaceId};
+    </update>
 
     <select id="queryByUserIdAndInterfaceId" resultType="com.juzi.model.entity.UserInterfaceInfo">
         select *

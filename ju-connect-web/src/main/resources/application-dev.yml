@@ -5,7 +5,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 192.168.0.101:8848
+        server-addr: 192.168.1.7:8848
   datasource:
     url: jdbc:mysql://localhost:3306/ju_connect             # 数据库连接URL
     username: root                                          # 数据库用户名
@@ -39,7 +39,7 @@ mybatis:
 dubbo:
   registry:
     id: nacos-registry
-    address: nacos://192.168.0.101:8848
+    address: nacos://192.168.1.7:8848
   protocol:
     name: dubbo
     port: -1

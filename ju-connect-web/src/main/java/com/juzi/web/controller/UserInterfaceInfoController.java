@@ -26,10 +26,4 @@ public class UserInterfaceInfoController {
     public BaseResponse<Long> userInterfaceApply(@RequestBody UserInterfaceInfoEditRequest userInterfaceInfoEditRequest) {
         return ResultUtils.success(userInterfaceInfoService.userInterfaceInfoEdit(userInterfaceInfoEditRequest));
     }
-
-    @PostMapping("/acc-down")
-    @AuthCheck(mustRole = "admin")
-    public BaseResponse<Boolean> userInterfaceAccNumDown(@RequestBody UserInterfaceAccNumDownRequest userInterfaceAccNumDownRequest) {
-        return ResultUtils.success(userInterfaceInfoService.userInterfaceAccNumDown(userInterfaceAccNumDownRequest));
-    }
 }

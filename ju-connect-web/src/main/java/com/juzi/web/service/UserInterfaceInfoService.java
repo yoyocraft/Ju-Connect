@@ -20,13 +20,4 @@ public interface UserInterfaceInfoService extends IService<UserInterfaceInfo> {
      * @return id
      */
     Long userInterfaceInfoEdit(UserInterfaceInfoEditRequest userInterfaceInfoEditRequest);
-
-    /**
-     * 扣减用户接口调用剩余次数
-     *
-     * @param userInterfaceAccNumDownRequest 用户接口调用剩余次数封装
-     * @return true - 扣减成功
-     */
-    Boolean userInterfaceAccNumDown(UserInterfaceAccNumDownRequest userInterfaceAccNumDownRequest);
-
 }

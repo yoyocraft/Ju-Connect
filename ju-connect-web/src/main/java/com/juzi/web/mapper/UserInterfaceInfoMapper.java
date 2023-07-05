@@ -20,6 +20,16 @@ public interface UserInterfaceInfoMapper extends BaseMapper<UserInterfaceInfo> {
      * @return 用户接口关系
      */
     UserInterfaceInfo queryByUserIdAndInterfaceId(Long userId, Long interfaceId);
+
+    /**
+     * 扣减用户调用接口数
+     *
+     * @param userId      用户id
+     * @param interfaceId 接口id
+     * @param accNum      扣减调用次数
+     * @return true - 修改成功
+     */
+    boolean subAccNum(Long userId, Long interfaceId, Integer accNum);
 }
 
 

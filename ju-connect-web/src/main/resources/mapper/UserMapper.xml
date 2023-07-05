@@ -26,4 +26,10 @@
         userPassword,createTime,updateTime,
         isDelete
     </sql>
+    <select id="getUserByAccessKey" resultType="com.juzi.model.entity.User">
+        select *
+        from ju_connect.user
+        where isDelete = 0
+          and accessKey = #{accessKey};
+    </select>
 </mapper>

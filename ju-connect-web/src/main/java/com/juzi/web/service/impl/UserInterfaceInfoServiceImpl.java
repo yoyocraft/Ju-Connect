@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.juzi.common.biz.StatusCode;
 import com.juzi.common.util.ThrowUtils;
 import com.juzi.common.util.UserInterfaceValidUtils;
-import com.juzi.model.dto.user_interface_info.UserInterfaceAccNumDownRequest;
 import com.juzi.model.dto.user_interface_info.UserInterfaceInfoEditRequest;
 import com.juzi.model.entity.UserInterfaceInfo;
 import com.juzi.web.mapper.UserInterfaceInfoMapper;
@@ -46,25 +45,6 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
         boolean updateRes = this.updateById(userInterfaceInfo);
         ThrowUtils.throwIf(!updateRes, StatusCode.SYSTEM_ERROR, "修改用户接口信息失败");
         return userInterfaceInfo.getId();
-    }
-
-    @Override
-    public Boolean userInterfaceAccNumDown(UserInterfaceAccNumDownRequest userInterfaceAccNumDownRequest) {
-        Long userId = userInterfaceAccNumDownRequest.getUserId();
-        Long interfaceId = userInterfaceAccNumDownRequest.getInterfaceId();
-        Integer accNum = userInterfaceAccNumDownRequest.getAccNum();
-
-        UserInterfaceValidUtils.validAcc(userId, interfaceId, accNum);
-
-        UserInterfaceInfo userInterfaceInfo = userInterfaceInfoMapper.queryByUserIdAndInterfaceId(userId, interfaceId);
-
-        ThrowUtils.throwIf(Objects.isNull(userInterfaceInfo), StatusCode.NOT_FOUND_ERROR, "未开通此接口");
-        userInterfaceInfo.subInterfaceAccessNum(accNum);
-
-        boolean updateRes = this.updateById(userInterfaceInfo);
-        ThrowUtils.throwIf(!updateRes, StatusCode.SYSTEM_ERROR, "修改用户接口信息失败");
-
-        return Boolean.TRUE;
     }
 }
 

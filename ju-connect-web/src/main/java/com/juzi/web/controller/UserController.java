@@ -53,7 +53,7 @@ public class UserController {
         return ResultUtils.success(userService.applyUserKey(idRequest, request));
     }
 
-    @GetMapping("/gen/key")
+    @GetMapping("/key")
     public BaseResponse<UserSignVO> getUserKey(SingleIdRequest idRequest, HttpServletRequest request) {
         return ResultUtils.success(userService.getUserKey(idRequest, request));
     }
