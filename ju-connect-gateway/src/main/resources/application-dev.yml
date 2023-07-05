@@ -7,6 +7,9 @@ spring:
           uri: http://localhost:8111
           predicates:
             - Path=/api/**
+          filters:
+            # 模拟接口层可以做校验，校验请求头中是否包含gateway-key: codejuzi12138
+            - AddRequestHeader=gateway-key, codejuzi12138
     nacos:
       discovery:
         server-addr: 192.168.1.7:8848
