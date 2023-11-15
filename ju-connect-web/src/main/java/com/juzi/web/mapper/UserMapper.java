@@ -20,6 +20,13 @@ public interface UserMapper extends BaseMapper<User> {
      * @return 用户信息
      */
     User getUserByAccessKey(String accessKey);
+
+    /**
+     * 根据userID查询用户的ak和sk
+     * @param userId user id
+     * @return user info with access key and secret key
+     */
+    User getUserAkAndSkByUserId(Long userId);
 }
 
 

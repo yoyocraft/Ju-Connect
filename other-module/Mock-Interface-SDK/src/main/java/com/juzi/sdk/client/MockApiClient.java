@@ -8,6 +8,7 @@ import cn.hutool.json.JSONUtil;
 import com.juzi.sdk.model.entity.User;
 import com.juzi.sdk.utils.SignUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -57,7 +58,11 @@ public class MockApiClient {
         Map<String, String> headers = new HashMap<>();
         headers.put("accessKey", accessKey);
         headers.put("nonce", RandomUtil.randomNumbers(20));
-        headers.put("body", URLEncoder.encode(body, StandardCharsets.UTF_8));
+        try {
+            headers.put("body", URLEncoder.encode(body, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
         headers.put("timestamp", String.valueOf(System.currentTimeMillis() / 1000));
         headers.put("sign", SignUtils.genSign(body, secretKey));
         return headers;

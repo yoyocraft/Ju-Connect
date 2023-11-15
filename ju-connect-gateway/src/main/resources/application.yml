@@ -15,4 +15,4 @@ logging:
     org:
       springframework:
         cloud:
-          gateway: trace
+          gateway: debug

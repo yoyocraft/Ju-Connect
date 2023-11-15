@@ -5,8 +5,3 @@ server:
 spring:
   application:
     name: mock-interface
-juzi:
-  api:
-    client:
-      access-key: aaa
-      secret-key: bbb

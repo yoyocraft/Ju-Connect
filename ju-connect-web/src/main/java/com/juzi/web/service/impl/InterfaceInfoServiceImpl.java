@@ -17,10 +17,12 @@ import com.juzi.common.util.ThrowUtils;
 import com.juzi.model.dto.SingleIdRequest;
 import com.juzi.model.dto.interface_info.*;
 import com.juzi.model.entity.InterfaceInfo;
+import com.juzi.model.entity.User;
 import com.juzi.model.vo.InterfaceInfoVO;
 import com.juzi.model.vo.UserVO;
 import com.juzi.sdk.client.MockApiClient;
 import com.juzi.web.mapper.InterfaceInfoMapper;
+import com.juzi.web.mapper.UserMapper;
 import com.juzi.web.service.InterfaceInfoService;
 import com.juzi.web.service.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -47,6 +49,9 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
 
     @Resource
     private InterfaceInfoMapper interfaceInfoMapper;
+
+    @Resource
+    private UserMapper userMapper;
 
     @Override
     public Long interfaceInfoEdit(InterfaceEditRequest interfaceEditRequest, boolean add, HttpServletRequest request) {
@@ -139,7 +144,6 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
     }
 
 
-
     @Override
     public Boolean interfaceOnline(SingleIdRequest idRequest) {
         Long interfaceId = idRequest.getId();
@@ -190,8 +194,9 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
                 StatusCode.NO_AUTH_ERROR, "接口不在线");
 
         // 调用接口（本质上是RPC）
+        User user = userMapper.getUserAkAndSkByUserId(loginUser.getId());
         com.juzi.sdk.model.entity.User mockUser = GSON.fromJson(reqParams, com.juzi.sdk.model.entity.User.class);
-        MockApiClient mockApiClient = new MockApiClient(loginUser.getAccessKey(), loginUser.getSecretKey());
+        MockApiClient mockApiClient = new MockApiClient(user.getAccessKey(), user.getSecretKey());
 
         return mockApiClient.getUserByJson(mockUser);
     }

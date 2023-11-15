@@ -5,10 +5,12 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 192.168.1.7:8848
+        server-addr: 127.0.0.1:8848
+        username: nacos
+        password: nacos
   datasource:
     url: jdbc:mysql://localhost:3306/ju_connect             # 数据库连接URL
-    username: root                                          # 数据库用户名
+    username: codejuzi                                      # 数据库用户名
     password: 12345678                                      # 数据库密码
     driver-class-name: com.mysql.cj.jdbc.Driver             # 数据库驱动类名
     type: com.alibaba.druid.pool.DruidDataSource            # 指定使用Druid数据源
@@ -39,7 +41,9 @@ mybatis:
 dubbo:
   registry:
     id: nacos-registry
-    address: nacos://192.168.1.7:8848
+    address: nacos://127.0.0.1:8848
+    username: nacos
+    password: nacos
   protocol:
     name: dubbo
     port: -1

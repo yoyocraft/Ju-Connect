@@ -30,6 +30,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -133,14 +134,14 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
                                 // 释放内存
                                 DataBufferUtils.release(dataBuffer);
                                 // 构建日志
-                                StringBuilder sb2 = new StringBuilder(200);
-                                sb2.append("<--- {} {} \n");
+                                StringBuilder logBuilder = new StringBuilder(200);
+                                logBuilder.append("<--- {} {} \n");
                                 List<Object> rspArgs = new ArrayList<>();
                                 rspArgs.add(originalResponse.getStatusCode());
-                                //rspArgs.add(requestUrl);
+//                                rspArgs.add(requestUrl);
                                 String data = new String(content, StandardCharsets.UTF_8);
-                                sb2.append(data);
-                                log.info(sb2.toString(), rspArgs.toArray());
+                                logBuilder.append(data);
+                                log.info(logBuilder.toString(), rspArgs.toArray());
                                 return bufferFactory.wrap(content);
                             }));
                         } else {
@@ -179,7 +180,12 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         String accessKey = headers.getFirst("accessKey");
         String nonce = headers.getFirst("nonce");
         String timestamp = headers.getFirst("timestamp");
-        String body = URLDecoder.decode(Objects.requireNonNull(headers.getFirst("body")), StandardCharsets.UTF_8);
+        String body;
+        try {
+            body = URLDecoder.decode(Objects.requireNonNull(headers.getFirst("body")), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
         String sign = headers.getFirst("sign");
 
         User invokeUser = rpcUserService.getUserByAccessKey(accessKey);
@@ -192,7 +198,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
             throw new RuntimeException("无权限");
         }
 
-        // todo 校验随机数，实际上还要查看服务器端是否有这个随机数
+        // todo 校验随机数，实际上还要查看服务器端是否有这个随机数，可以使用Redis存储
         assert nonce != null;
         if (nonce.length() != 20) {
             throw new RuntimeException("无权限");

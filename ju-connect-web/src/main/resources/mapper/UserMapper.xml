@@ -32,4 +32,10 @@
         where isDelete = 0
           and accessKey = #{accessKey};
     </select>
+    <select id="getUserAkAndSkByUserId" resultType="com.juzi.model.entity.User">
+        select accessKey, secretKey, id
+        from ju_connect.user
+        where isDelete = 0
+            and id = #{userId};
+    </select>
 </mapper>

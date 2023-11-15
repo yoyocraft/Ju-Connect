@@ -2,12 +2,14 @@ package com.juzi.common.exception;
 
 
 import com.juzi.common.biz.StatusCode;
+import lombok.Getter;
 
 /**
  * 自定义业务异常类
  *
  * @author codejuzi
  */
+@Getter
 public class BusinessException extends RuntimeException {
 
     /**
@@ -28,7 +30,4 @@ public class BusinessException extends RuntimeException {
         this(statusCode.getCode(), message);
     }
 
-    public int getCode() {
-        return code;
-    }
 }
