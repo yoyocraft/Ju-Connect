@@ -16,7 +16,10 @@ spring:
         username: nacos
         password: nacos
         register-enabled: false
-
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
 dubbo:
   registry:
     id: nacos-registry-gateway

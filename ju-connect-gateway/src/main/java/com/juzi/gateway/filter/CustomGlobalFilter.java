@@ -5,6 +5,7 @@ import com.juzi.common.util.ThrowUtils;
 import com.juzi.dubbo.service.RPCInterfaceService;
 import com.juzi.dubbo.service.RPCUserInterfaceService;
 import com.juzi.dubbo.service.RPCUserService;
+import com.juzi.gateway.manager.RedisLimiterManager;
 import com.juzi.model.dto.interface_info.InterfaceGatewayQueryRequest;
 import com.juzi.model.dto.user_interface_info.UserInterfaceAccNumDownRequest;
 import com.juzi.model.entity.InterfaceInfo;
@@ -30,6 +31,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -54,6 +56,10 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
 
     @DubboReference
     private RPCUserInterfaceService rpcUserInterfaceService;
+
+
+    @Resource
+    private RedisLimiterManager redisLimiterManager;
 
     private static final List<String> IP_WHITE_LIST = Arrays.asList(
             "127.0.0.1",
@@ -82,6 +88,14 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
             invokeUser = doUserAuth(request);
         } catch (Exception e) {
             return handleNoAuth(response);
+        }
+
+        // 限流
+        boolean limitRes = doLimiter(invokeUser);
+        if (!limitRes) {
+            log.info("userId: {} 请求频繁", invokeUser.getId());
+            response.setStatusCode(HttpStatus.TOO_MANY_REQUESTS);
+            return response.setComplete();
         }
 
         // 请求的模拟接口是否存在
@@ -165,6 +179,13 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
     @Override
     public int getOrder() {
         return -1;
+    }
+
+    private boolean doLimiter(User loginUser) {
+
+        final String USER_METHOD_RATE_PREFIX = "invoke_interface_";
+        // 每个用户一个限流器
+        return redisLimiterManager.doRateLimit(USER_METHOD_RATE_PREFIX + loginUser.getId());
     }
 
     private void doReqLog(ServerHttpRequest request) {

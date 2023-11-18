@@ -41,6 +41,7 @@
         <spring-cloud.version>2021.0.8</spring-cloud.version>
         <logback.version>1.2.12</logback.version>
         <dubbo.version>3.0.12</dubbo.version>
+        <redisson.version>3.24.3</redisson.version>
     </properties>
 
 
@@ -90,6 +91,13 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.version}</version>
+            </dependency>
+
+            <!--redis-->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson</artifactId>
+                <version>${redisson.version}</version>
             </dependency>
 
             <!--knife4j-->
