@@ -1,6 +1,5 @@
 package com.juzi.web.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,7 +14,10 @@ import com.juzi.common.util.InterfaceValidUtils;
 import com.juzi.common.util.SqlUtils;
 import com.juzi.common.util.ThrowUtils;
 import com.juzi.model.dto.SingleIdRequest;
-import com.juzi.model.dto.interface_info.*;
+import com.juzi.model.dto.interface_info.InterfaceDeleteRequest;
+import com.juzi.model.dto.interface_info.InterfaceEditRequest;
+import com.juzi.model.dto.interface_info.InterfaceInvokeRequest;
+import com.juzi.model.dto.interface_info.InterfaceQueryRequest;
 import com.juzi.model.entity.InterfaceInfo;
 import com.juzi.model.entity.User;
 import com.juzi.model.vo.InterfaceInfoVO;

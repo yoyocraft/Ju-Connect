@@ -24,12 +24,15 @@ public class RedissonConfig {
 
     private Integer database;
 
+    private String password;
+
     @Bean
     public RedissonClient redissonClient() {
         String redisAddress = String.format("redis://%s:%s", host, port);
         Config config = new Config();
         config.useSingleServer()
                 .setDatabase(database)
+                .setPassword(password)
                 .setAddress(redisAddress);
         return Redisson.create(config);
     }

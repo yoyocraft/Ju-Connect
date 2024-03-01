@@ -57,7 +57,6 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
     @DubboReference
     private RPCUserInterfaceService rpcUserInterfaceService;
 
-
     @Resource
     private RedisLimiterManager redisLimiterManager;
 
@@ -67,7 +66,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
             "0:0:0:0:0:0:0:1"
     );
 
-    private static final String INTERFACE_URL_HOST = "http://localhost:8111";
+    private static final String INTERFACE_URL_HOST = "http://localhost:8200";
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {

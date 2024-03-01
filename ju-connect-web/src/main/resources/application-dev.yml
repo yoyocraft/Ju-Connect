@@ -1,17 +1,14 @@
 spring:
+  config:
+    import:
+      - /Users/codejuzi/Documents/CodeWorkSpace/Project/Ju-Connect/config/dev_conf.properties
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 127.0.0.1:8848
-        username: nacos
-        password: nacos
   datasource:
     url: jdbc:mysql://localhost:3306/ju_connect             # 数据库连接URL
-    username: codejuzi                                      # 数据库用户名
-    password: codejuzi                                      # 数据库密码
+    username: root                                          # 数据库用户名
+    password: 12345678                                      # 数据库密码
     driver-class-name: com.mysql.cj.jdbc.Driver             # 数据库驱动类名
     type: com.alibaba.druid.pool.DruidDataSource            # 指定使用Druid数据源
     druid:
@@ -37,15 +34,3 @@ mybatis-plus:
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
 mybatis:
   mapper-locations: classpath:/mapper/*.xml
-
-dubbo:
-  registry:
-    id: nacos-registry
-    address: nacos://127.0.0.1:8848
-    username: nacos
-    password: nacos
-  protocol:
-    name: dubbo
-    port: -1
-  scan:
-    base-packages: com.juzi.web.rpc

@@ -1,31 +1,15 @@
 spring:
+  config:
+    import:
+      - /Users/codejuzi/Documents/CodeWorkSpace/Project/Ju-Connect/config/gateway_conf.properties
   cloud:
     gateway:
       routes:
         - id: api_route
           # 模拟接口的地址
-          uri: http://localhost:8111
+          uri: http://localhost:8200
           predicates:
             - Path=/api/**
           filters:
             # 模拟接口层可以做校验，校验请求头中是否包含gateway-key: codejuzi12138
             - AddRequestHeader=gateway-key, codejuzi12138
-    nacos:
-      discovery:
-        server-addr: 127.0.0.1:8848
-        username: nacos
-        password: nacos
-        register-enabled: false
-  redis:
-    host: localhost
-    port: 6379
-    database: 0
-dubbo:
-  registry:
-    id: nacos-registry-gateway
-    address: nacos://127.0.0.1:8848
-    username: nacos
-    password: nacos
-  protocol:
-    name: dubbo
-    port: -1
